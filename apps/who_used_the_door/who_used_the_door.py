@@ -303,7 +303,7 @@ class WhoUsedTheDoor(hass.Hass):
         state = kwargs.get(TIMER_STATE)
         appobj = kwargs.get(TIMER_OBJECT)
         duration = self.friendly_time(appobj.duration, appobj.duration < 60)
-        message = f"{self._message_name} has been {state} for more than {appobj.duration}."
+        message = f"{self._message_name} has been {state} for more than {duration}."
         self.bulk_nofity(appobj, message)
 
     def bulk_nofity(self, appobj, message):
@@ -314,7 +314,7 @@ class WhoUsedTheDoor(hass.Hass):
     def terminate(self):
         for name in self.handles.keys():
             self.cancel_listen_handle(name)
-        for name in self.handles.keys():
+        for name in self.timers.keys():
             self.cancel_timer_handle(name)
 
     def friendly_time(self, seconds, include_seconds=True):

@@ -297,7 +297,7 @@ class WhoUsedTheDoor(hass.Hass):
         if appobj.enabled:
             kwargs[TIMER_OBJECT] = appobj
             self.log(f"Creating '{timer_name}' timer.", level = self._level)
-            self.timers[timer_name] = self.run_in(callback, appobj.duration, **kwargs)
+            self.timers[timer_name] = self.run_in(callback, 90, **kwargs)
 
     def nofity_door_open(self, kwargs):
         state = kwargs.get(TIMER_STATE)

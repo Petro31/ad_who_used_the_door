@@ -221,10 +221,10 @@ class WhoUsedTheDoor(hass.Hass):
                         self.cancel_timer_handle(INTRUDER)
 
                         # Start unknown person timer.
-                        self.start_timer(
+                        self._start_app_timer(
                             self.notify_intruder,
                             INTRUDER,
-                            self._open,
+                            90,
                             **tkwargs)
 
                     message = f"{state} used the {self._message_name}."
@@ -293,11 +293,14 @@ class WhoUsedTheDoor(hass.Hass):
             self.log(f"{entity_id} -> {state}: {attributes}", level = self._level)
             self.set_state(entity_id, state=STATE_UNKNOWN, attributes=attributes)
 
+    def _start_app_timer(self, callback, timer_name, duration, **kwargs):
+        self.log(f"Creating '{timer_name}' timer.", level = self._level)
+        self.timers[timer_name] = self.run_in(callback, duration, **kwargs)
+
     def start_timer(self, callback, timer_name, appobj, **kwargs):
         if appobj.enabled:
             kwargs[TIMER_OBJECT] = appobj
-            self.log(f"Creating '{timer_name}' timer.", level = self._level)
-            self.timers[timer_name] = self.run_in(callback, 90, **kwargs)
+            self._start_app_timer(callback, timer_name, appobj.duration, **kwargs)
 
     def nofity_door_open(self, kwargs):
         state = kwargs.get(TIMER_STATE)
